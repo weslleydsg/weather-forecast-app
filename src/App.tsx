@@ -1,7 +1,8 @@
 import React from 'react';
-import { Platform, SafeAreaView, StatusBar, Text } from 'react-native';
-import { displayName } from '~/../app.json';
+import { Platform, StatusBar } from 'react-native';
 import useIsDarkMode from '~/hooks/useIsDarkMode';
+import AppProvider from '~/providers/AppProvider';
+import Routes from '~/routes';
 
 function App() {
   const isDarkMode = useIsDarkMode();
@@ -10,11 +11,9 @@ function App() {
     StatusBar.setBackgroundColor(isDarkMode ? 'gray' : 'white');
   }
   return (
-    <SafeAreaView>
-      <Text style={[{ color: isDarkMode ? 'white' : 'black' }]}>
-        {displayName}
-      </Text>
-    </SafeAreaView>
+    <AppProvider>
+      <Routes />
+    </AppProvider>
   );
 }
 
