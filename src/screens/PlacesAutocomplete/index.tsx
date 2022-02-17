@@ -17,7 +17,7 @@ import { ErrorMessage, UserFeedback } from '~/utils/constants';
 import styles from './styles';
 
 const PlacesAutocompleteScreen = withTheme(({ theme }) => {
-  const { setOptions } = useNavigation<NavigationProp<HomeStack>>();
+  const { setOptions, navigate } = useNavigation<NavigationProp<HomeStack>>();
   const { isLoading, mutateAsync: getCitiesAutocomplete } =
     useMutation<PlacesAutocomplete>('cities-autocomplete', 'placesApi', 'get', {
       url: `place/autocomplete/json?language=pt_BR&types=%28cities%29&key=${environment.placesApiKey}`,
@@ -27,13 +27,7 @@ const PlacesAutocompleteScreen = withTheme(({ theme }) => {
   const [citiesAutocomplete, setCitiesAutocomplete] = useState<string[]>();
   const debouncedSearchText = useDebounce(searchText);
   const ListEmptyComponent = (
-    <View
-      style={{
-        flex: 1,
-        justifyContent: 'center',
-        alignItems: 'center',
-      }}
-    >
+    <View style={styles.flatListEmptyComponent}>
       <Title>
         {citiesAutocomplete && debouncedSearchText.length > 2
           ? 'Não há cidades para esse termo.'
@@ -41,6 +35,10 @@ const PlacesAutocompleteScreen = withTheme(({ theme }) => {
       </Title>
     </View>
   );
+
+  function navigateToCityWeather(cityName: string) {
+    navigate('CityWeather', { cityName });
+  }
 
   useLayoutEffect(() => {
     setOptions({
@@ -117,7 +115,8 @@ const PlacesAutocompleteScreen = withTheme(({ theme }) => {
       <Button
         icon="city"
         style={{ paddingVertical: theme.spacings.small }}
-        contentStyle={{ justifyContent: 'flex-start' }}
+        contentStyle={styles.buttonItemContent}
+        onPress={() => navigateToCityWeather(item)}
       >
         {item}
       </Button>
@@ -134,8 +133,8 @@ const PlacesAutocompleteScreen = withTheme(({ theme }) => {
   return (
     <SafeAreaView style={[styles.screen, { margin: theme.spacings.large }]}>
       <FlatList
-        style={{ width: '100%' }}
-        contentContainerStyle={{ flexGrow: 1 }}
+        style={styles.flatList}
+        contentContainerStyle={styles.flatListContent}
         data={citiesAutocomplete}
         ListEmptyComponent={ListEmptyComponent}
         keyExtractor={keyExtractor}
