@@ -7,9 +7,16 @@ Weather Forecast mobile application built with [React Native](https://reactnativ
 ## Installation
 
 ```bash
-$ npm install
+npm install
 # or
 yarn
+```
+
+### Setup .env file
+
+```bash
+cp .env.example .env
+# open .env and insert the keys.
 ```
 
 ## Running the app
@@ -17,27 +24,27 @@ yarn
 ### Running metro bundler
 
 ```bash
-$ npm run start
+npm run start
 # or
-$ yarn start
+yarn start
 ```
 
 ### Building for iOS
 
 ```bash
-$ npx pod-install ios
+npx pod-install ios
 ```
 
 ```bash
-$ npm run ios
+npm run ios
 # or
-$ yarn ios
+yarn ios
 ```
 
 ### Building for Android
 
 ```bash
-$ npm run android
+npm run android
 # or
-$ yarn android
+yarn android
 ```
