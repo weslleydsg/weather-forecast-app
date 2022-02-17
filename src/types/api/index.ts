@@ -32,3 +32,28 @@ export interface MutationRequest<T> {
   url?: string;
   data: T;
 }
+
+interface PlacesAutocompleteLengthOffset {
+  length: number;
+  offset: number;
+}
+
+export interface PlacesAutocomplete {
+  predictions: {
+    description: string;
+    matched_substrings: PlacesAutocompleteLengthOffset[];
+    place_id: string;
+    reference: string;
+    structured_formatting: {
+      main_text: string;
+      main_text_matched_substrings: PlacesAutocompleteLengthOffset[];
+      secondary_text: string;
+    };
+    terms: {
+      offset: number;
+      value: string;
+    }[];
+    types: ('locality' | 'political' | 'geocode')[];
+  }[];
+  status: string;
+}
