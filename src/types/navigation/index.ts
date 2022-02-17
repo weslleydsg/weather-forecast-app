@@ -13,6 +13,7 @@ export type BottomTabStacks = {
 
 export type HomeStack = {
   SavedCities: undefined;
+  PlacesAutocomplete: undefined;
 };
 
 export type MyLocationStack = {
