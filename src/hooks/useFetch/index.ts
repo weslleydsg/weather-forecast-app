@@ -12,7 +12,7 @@ export default function useFetch<T>(
   key: string,
   apiType: 'placesApi' | 'weatherApi',
   url: string,
-  { enabled = true, headers, params }: OptionalProps,
+  { enabled, headers, params }: OptionalProps = {},
 ): QueryResult<T> {
   return useQuery<QueryResult<T>, Error, UseQueryResult<T, Error>>(
     key,

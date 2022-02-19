@@ -9,23 +9,20 @@ import {
   withTheme,
 } from 'react-native-paper';
 import HeaderSearchBar from '~/components/HeaderSearchBar';
-import environment from '~/config/environment';
 import useDebounce from '~/hooks/useDebounce';
-import useMutation from '~/hooks/useMutation';
-import { HomeStack, PlacesAutocomplete } from '~/types';
+import { GetCitiesAutocomplete } from '~/services/api/places';
+import { HomeStack } from '~/types';
 import { ErrorMessage, UserFeedback } from '~/utils/constants';
 import styles from './styles';
 
 const PlacesAutocompleteScreen = withTheme(({ theme }) => {
   const { setOptions, navigate } = useNavigation<NavigationProp<HomeStack>>();
-  const { isLoading, mutateAsync: getCitiesAutocomplete } =
-    useMutation<PlacesAutocomplete>('cities-autocomplete', 'placesApi', 'get', {
-      url: `place/autocomplete/json?language=pt_BR&types=%28cities%29&key=${environment.placesApiKey}`,
-    });
   const searchBarRef = useRef<TextInput>(null);
   const [searchText, setSearchText] = useState('');
   const [citiesAutocomplete, setCitiesAutocomplete] = useState<string[]>();
   const debouncedSearchText = useDebounce(searchText);
+  const { isFetching, refetch: fetchCitiesAutocomplete } =
+    GetCitiesAutocomplete(debouncedSearchText);
   const ListEmptyComponent = (
     <View style={styles.flatListEmptyComponent}>
       <Title>
@@ -56,15 +53,14 @@ const PlacesAutocompleteScreen = withTheme(({ theme }) => {
   useEffect(() => {
     if (debouncedSearchText.length < 3) return;
 
-    async function getCitiesAutocompleteByText() {
+    async function getCitiesAutocomplete() {
       try {
-        const { data } = await getCitiesAutocomplete({
-          data: undefined,
-          url: `&input=${debouncedSearchText}`,
-        });
-        const placesAutocomplete = data.predictions.map(({ description }) => {
-          return description;
-        });
+        const { data } = await fetchCitiesAutocomplete();
+        const placesAutocomplete = data?.data?.predictions.map(
+          ({ description }) => {
+            return description;
+          },
+        );
         setCitiesAutocomplete(placesAutocomplete);
       } catch (error) {
         if (error instanceof Error) {
@@ -79,7 +75,7 @@ const PlacesAutocompleteScreen = withTheme(({ theme }) => {
                 },
                 {
                   text: 'Tentar novamente',
-                  onPress: getCitiesAutocompleteByText,
+                  onPress: getCitiesAutocomplete,
                 },
               ],
             );
@@ -96,15 +92,15 @@ const PlacesAutocompleteScreen = withTheme(({ theme }) => {
             },
             {
               text: 'Tentar novamente',
-              onPress: getCitiesAutocompleteByText,
+              onPress: getCitiesAutocomplete,
             },
           ],
         );
       }
     }
 
-    getCitiesAutocompleteByText();
-  }, [getCitiesAutocomplete, debouncedSearchText]);
+    getCitiesAutocomplete();
+  }, [fetchCitiesAutocomplete, debouncedSearchText]);
 
   const keyExtractor = (_: string, index: number) => `${index}`;
 
@@ -123,7 +119,7 @@ const PlacesAutocompleteScreen = withTheme(({ theme }) => {
     );
   };
 
-  if (isLoading) {
+  if (isFetching) {
     return (
       <SafeAreaView style={[styles.screen, { margin: theme.spacings.large }]}>
         <ActivityIndicator />
