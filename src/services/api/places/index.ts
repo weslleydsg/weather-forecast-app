@@ -7,5 +7,6 @@ export const GetCitiesAutocomplete = (searchTerm: string) => {
     'cities-autocomplete',
     'placesApi',
     `place/autocomplete/json?language=pt_BR&types=%28cities%29&input=${searchTerm}&key=${environment.placesApiKey}`,
+    { enabled: false },
   );
 };
