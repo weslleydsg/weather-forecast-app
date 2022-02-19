@@ -1,2 +1,2 @@
-export * from './places';
-export * from './weather';
+export * from './places/api';
+export * from './weather/api';
