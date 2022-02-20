@@ -5,21 +5,25 @@ import {
   useRoute,
 } from '@react-navigation/native';
 import React, { useLayoutEffect } from 'react';
-import { SafeAreaView } from 'react-native';
-import { Title, withTheme } from 'react-native-paper';
+import { ActivityIndicator, withTheme } from 'react-native-paper';
+import { SafeAreaView } from 'react-native-safe-area-context';
 import Icons from 'react-native-vector-icons/MaterialIcons';
+import WeatherForecastByCoord from '~/components/WeatherForecastByCoord';
 import { useFavoritesCities } from '~/hooks/useFavoritesCities';
+import { GetCurrentWeather } from '~/services/api/weather';
 import { HomeStack } from '~/types';
 import styles from './styles';
 
-const CityWeatherScreen = withTheme(({ theme }) => {
+const CityWeatherForecastScreen = withTheme(({ theme }) => {
   const { setOptions } = useNavigation<NavigationProp<HomeStack>>();
-  const { params } = useRoute<RouteProp<HomeStack, 'CityWeather'>>();
+  const { params } = useRoute<RouteProp<HomeStack, 'CityWeatherForecast'>>();
   const { favoritesCities, toggleFavoritesCities } = useFavoritesCities();
+  const { data: currentWeatherData } = GetCurrentWeather(params.cityName);
+  const coord = currentWeatherData?.data?.coord;
   const favorite =
-    favoritesCities.findIndex(
-      (favoriteCity) => favoriteCity === params.cityName,
-    ) !== -1;
+    favoritesCities.findIndex((favoriteCity) => {
+      return favoriteCity === params.cityName;
+    }) !== -1;
 
   useLayoutEffect(() => {
     setOptions({
@@ -43,11 +47,14 @@ const CityWeatherScreen = withTheme(({ theme }) => {
     toggleFavoritesCities,
   ]);
 
-  return (
-    <SafeAreaView style={[styles.screen, { margin: theme.spacings.large }]}>
-      <Title>{params.cityName}</Title>
-    </SafeAreaView>
-  );
+  if (!coord) {
+    return (
+      <SafeAreaView style={styles.loading}>
+        <ActivityIndicator />
+      </SafeAreaView>
+    );
+  }
+  return <WeatherForecastByCoord coord={coord} />;
 });
 
-export default CityWeatherScreen;
+export default CityWeatherForecastScreen;

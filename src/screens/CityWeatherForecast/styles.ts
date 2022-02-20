@@ -1,7 +1,7 @@
 import { StyleSheet } from 'react-native';
 
 export default StyleSheet.create({
-  screen: {
+  loading: {
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',

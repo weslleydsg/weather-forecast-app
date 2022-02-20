@@ -10,6 +10,7 @@ export declare global {
       };
       iconSizes: {
         bottomTab: number;
+        weather: number;
       };
     }
   }

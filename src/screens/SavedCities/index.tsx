@@ -1,7 +1,8 @@
 import { NavigationProp, useNavigation } from '@react-navigation/native';
 import React, { useCallback, useLayoutEffect, useRef } from 'react';
-import { SafeAreaView, TextInput } from 'react-native';
+import { TextInput } from 'react-native';
 import { Title, withTheme } from 'react-native-paper';
+import { SafeAreaView } from 'react-native-safe-area-context';
 import HeaderSearchBar from '~/components/HeaderSearchBar';
 import { HomeStack } from '~/types';
 import styles from './styles';

@@ -1,9 +1,12 @@
 import { StyleSheet } from 'react-native';
 
 export default StyleSheet.create({
-  screen: {
+  screen: { flex: 1 },
+  loading: {
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
   },
+  errorView: { flex: 1 },
+  errorTitle: { textAlign: 'center' },
 });

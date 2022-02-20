@@ -14,7 +14,7 @@ export type BottomTabStacks = {
 export type HomeStack = {
   SavedCities: undefined;
   PlacesAutocomplete: undefined;
-  CityWeather: { cityName: string };
+  CityWeatherForecast: { cityName: string };
 };
 
 export type MyLocationStack = {

@@ -4,6 +4,7 @@ import { Environment } from '~/types';
 const environment: Environment = {
   placesApiUrl: Config.PLACES_API_URL,
   weatherApiUrl: Config.WEATHER_API_URL,
+  weatherImgUrl: Config.WEATHER_IMG_URL,
   placesApiKey: Config.PLACES_API_KEY,
   weatherApiKey: Config.WEATHER_API_KEY,
 };
