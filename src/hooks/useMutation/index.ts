@@ -1,4 +1,7 @@
-import { useMutation as useReactMutation } from 'react-query';
+import {
+  useMutation as useReactMutation,
+  UseMutationOptions,
+} from 'react-query';
 import * as apis from '~/services/api';
 import {
   Headers,
@@ -12,11 +15,16 @@ interface OptionalProps {
   headers?: Headers;
 }
 
+type Options<T, F> =
+  | UseMutationOptions<MutationResponse<T>, Error, MutationRequest<F>>
+  | undefined;
+
 export default function useMutation<T, F = undefined>(
   key: string,
   apiType: 'placesApi' | 'weatherApi',
   method: 'get' | 'post' | 'put' | 'patch' | 'delete',
   { url = '', headers }: OptionalProps = {},
+  options: Options<T, F> = {},
 ): MutationResult<MutationResponse<T>, MutationRequest<F>> {
   return useReactMutation<MutationResponse<T>, Error, MutationRequest<F>>(
     key,
@@ -25,5 +33,6 @@ export default function useMutation<T, F = undefined>(
         headers,
       });
     },
+    options,
   );
 }

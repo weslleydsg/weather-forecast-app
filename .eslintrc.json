@@ -28,7 +28,19 @@
     "import/prefer-default-export": "off",
     "@typescript-eslint/no-floating-promises": "off",
     "@typescript-eslint/unbound-method": "off",
-    "react/require-default-props": "off"
+    "react/require-default-props": "off",
+    "no-restricted-imports": [
+      "error",
+      {
+        "paths": [
+          {
+            "name": "react-native",
+            "importNames": ["SafeAreaView"],
+            "message": "Import SafeAreaView from react-navigation instead"
+          }
+        ]
+      }
+    ]
   },
   "settings": {
     "import/resolver": {

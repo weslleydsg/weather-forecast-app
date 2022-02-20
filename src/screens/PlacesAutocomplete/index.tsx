@@ -1,6 +1,6 @@
 import { NavigationProp, useNavigation } from '@react-navigation/native';
 import React, { useEffect, useLayoutEffect, useRef, useState } from 'react';
-import { Alert, FlatList, SafeAreaView, TextInput, View } from 'react-native';
+import { Alert, FlatList, TextInput, View } from 'react-native';
 import {
   ActivityIndicator,
   Button,
@@ -34,7 +34,7 @@ const PlacesAutocompleteScreen = withTheme(({ theme }) => {
   );
 
   function navigateToCityWeather(cityName: string) {
-    navigate('CityWeather', { cityName });
+    navigate('CityWeatherForecast', { cityName });
   }
 
   useLayoutEffect(() => {
@@ -111,7 +111,7 @@ const PlacesAutocompleteScreen = withTheme(({ theme }) => {
       <Button
         icon="city"
         style={{ paddingVertical: theme.spacings.small }}
-        contentStyle={styles.buttonItemContent}
+        contentStyle={[styles.buttonItemContent, { marginHorizontal: 16 }]}
         onPress={() => navigateToCityWeather(item)}
       >
         {item}
@@ -121,23 +121,21 @@ const PlacesAutocompleteScreen = withTheme(({ theme }) => {
 
   if (isFetching) {
     return (
-      <SafeAreaView style={[styles.screen, { margin: theme.spacings.large }]}>
+      <View style={styles.loading}>
         <ActivityIndicator />
-      </SafeAreaView>
+      </View>
     );
   }
   return (
-    <SafeAreaView style={[styles.screen, { margin: theme.spacings.large }]}>
-      <FlatList
-        style={styles.flatList}
-        contentContainerStyle={styles.flatListContent}
-        data={citiesAutocomplete}
-        ListEmptyComponent={ListEmptyComponent}
-        keyExtractor={keyExtractor}
-        ItemSeparatorComponent={renderSeparator}
-        renderItem={renderItem}
-      />
-    </SafeAreaView>
+    <FlatList
+      style={styles.flatList}
+      contentContainerStyle={styles.flatListContent}
+      data={debouncedSearchText.length > 2 ? citiesAutocomplete : []}
+      ListEmptyComponent={ListEmptyComponent}
+      keyExtractor={keyExtractor}
+      ItemSeparatorComponent={renderSeparator}
+      renderItem={renderItem}
+    />
   );
 });
 
