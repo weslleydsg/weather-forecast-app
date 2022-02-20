@@ -12,7 +12,7 @@ export type BottomTabStacks = {
 };
 
 export type HomeStack = {
-  SavedCities: undefined;
+  FavoritesCities: undefined;
   PlacesAutocomplete: undefined;
   CityWeatherForecast: { cityName: string };
 };

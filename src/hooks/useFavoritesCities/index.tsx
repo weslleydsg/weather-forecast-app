@@ -14,6 +14,7 @@ type Props = {
 };
 
 export type FavoritesCitiesProviderContextType = {
+  isLoading: boolean;
   favoritesCities: FavoritesCities;
   toggleFavoritesCities(city: string): void;
 };
@@ -23,6 +24,7 @@ const FavoritesCitiesProviderContext = createContext(
 );
 
 function FavoritesCitiesProvider({ children }: Props): JSX.Element {
+  const [isLoading, setIsLoading] = useState(true);
   const [favoritesCities, setFavoritesCities] = useState<FavoritesCities>([]);
 
   const storeFavoritesData = useCallback(async (data: FavoritesCities) => {
@@ -51,10 +53,11 @@ function FavoritesCitiesProvider({ children }: Props): JSX.Element {
 
   const value = useMemo(
     () => ({
+      isLoading,
       favoritesCities,
       toggleFavoritesCities,
     }),
-    [favoritesCities, toggleFavoritesCities],
+    [favoritesCities, isLoading, toggleFavoritesCities],
   );
 
   useEffect(() => {
@@ -64,6 +67,7 @@ function FavoritesCitiesProvider({ children }: Props): JSX.Element {
       );
       if (!favoriteStoredData) return;
       setFavoritesCities(favoriteStoredData);
+      setIsLoading(false);
     }
 
     getFavoritesData();
