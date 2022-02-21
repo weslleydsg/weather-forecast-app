@@ -1,8 +1,10 @@
-import React from 'react';
-import { Platform, StatusBar } from 'react-native';
+import React, { Suspense } from 'react';
+import { Platform, StatusBar, View } from 'react-native';
+import { ActivityIndicator } from 'react-native-paper';
 import useIsDarkMode from '~/hooks/useIsDarkMode';
 import AppProvider from '~/providers/AppProvider';
 import Routes from '~/routes';
+import '~/services/i18n';
 
 function App() {
   const isDarkMode = useIsDarkMode();
@@ -11,9 +13,23 @@ function App() {
     StatusBar.setBackgroundColor(isDarkMode ? 'gray' : 'white');
   }
   return (
-    <AppProvider>
-      <Routes />
-    </AppProvider>
+    <Suspense
+      fallback={
+        <View
+          style={{
+            flex: 1,
+            justifyContent: 'center',
+            alignItems: 'center',
+          }}
+        >
+          <ActivityIndicator />
+        </View>
+      }
+    >
+      <AppProvider>
+        <Routes />
+      </AppProvider>
+    </Suspense>
   );
 }
 

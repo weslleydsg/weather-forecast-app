@@ -1,6 +1,13 @@
 import { NavigationProp, useNavigation } from '@react-navigation/native';
-import React, { useEffect, useLayoutEffect, useRef, useState } from 'react';
-import { Alert, FlatList, TextInput, View } from 'react-native';
+import React, {
+  useCallback,
+  useEffect,
+  useLayoutEffect,
+  useRef,
+  useState,
+} from 'react';
+import { useTranslation } from 'react-i18next';
+import { FlatList, TextInput, View } from 'react-native';
 import {
   ActivityIndicator,
   Button,
@@ -12,23 +19,27 @@ import HeaderSearchBar from '~/components/HeaderSearchBar';
 import useDebounce from '~/hooks/useDebounce';
 import { GetCitiesAutocomplete } from '~/services/api/places';
 import { HomeStack } from '~/types';
-import { ErrorMessage, UserFeedback } from '~/utils/constants';
+import { ErrorMessage } from '~/utils/constants';
 import styles from './styles';
 
 const PlacesAutocompleteScreen = withTheme(({ theme }) => {
+  const { t, i18n } = useTranslation();
   const { setOptions, navigate } = useNavigation<NavigationProp<HomeStack>>();
   const searchBarRef = useRef<TextInput>(null);
   const [searchText, setSearchText] = useState('');
   const [citiesAutocomplete, setCitiesAutocomplete] = useState<string[]>();
   const debouncedSearchText = useDebounce(searchText);
-  const { isFetching, refetch: fetchCitiesAutocomplete } =
-    GetCitiesAutocomplete(debouncedSearchText);
+  const {
+    isFetching,
+    refetch: fetchCitiesAutocomplete,
+    error,
+  } = GetCitiesAutocomplete(debouncedSearchText);
   const ListEmptyComponent = (
     <View style={styles.flatListEmptyComponent}>
       <Title>
         {citiesAutocomplete && debouncedSearchText.length > 2
-          ? 'Não há cidades para esse termo.'
-          : 'Pesquise por cidades.'}
+          ? t('userFeedback.screen.thereIsNoCityTerm')
+          : t('userFeedback.screen.searchForCities')}
       </Title>
     </View>
   );
@@ -36,6 +47,17 @@ const PlacesAutocompleteScreen = withTheme(({ theme }) => {
   function navigateToCityWeather(cityName: string) {
     navigate('CityWeatherForecast', { cityName });
   }
+
+  const getCitiesAutocomplete = useCallback(async () => {
+    if (debouncedSearchText.length < 3) return;
+    const { data } = await fetchCitiesAutocomplete();
+    const placesAutocomplete = data?.data?.predictions.map(
+      ({ description }) => {
+        return description;
+      },
+    );
+    setCitiesAutocomplete(placesAutocomplete);
+  }, [debouncedSearchText.length, fetchCitiesAutocomplete]);
 
   useLayoutEffect(() => {
     setOptions({
@@ -51,56 +73,8 @@ const PlacesAutocompleteScreen = withTheme(({ theme }) => {
   }, [searchText, setOptions]);
 
   useEffect(() => {
-    if (debouncedSearchText.length < 3) return;
-
-    async function getCitiesAutocomplete() {
-      try {
-        const { data } = await fetchCitiesAutocomplete();
-        const placesAutocomplete = data?.data?.predictions.map(
-          ({ description }) => {
-            return description;
-          },
-        );
-        setCitiesAutocomplete(placesAutocomplete);
-      } catch (error) {
-        if (error instanceof Error) {
-          if (error.message === ErrorMessage.network) {
-            Alert.alert(
-              UserFeedback.error.networkTitle,
-              UserFeedback.error.networkMessage,
-              [
-                {
-                  text: 'Cancelar',
-                  style: 'cancel',
-                },
-                {
-                  text: 'Tentar novamente',
-                  onPress: getCitiesAutocomplete,
-                },
-              ],
-            );
-            return;
-          }
-        }
-        Alert.alert(
-          UserFeedback.error.networkTitle,
-          UserFeedback.error.networkMessage,
-          [
-            {
-              text: 'Cancelar',
-              style: 'cancel',
-            },
-            {
-              text: 'Tentar novamente',
-              onPress: getCitiesAutocomplete,
-            },
-          ],
-        );
-      }
-    }
-
     getCitiesAutocomplete();
-  }, [fetchCitiesAutocomplete, debouncedSearchText]);
+  }, [i18n.language, getCitiesAutocomplete]);
 
   const keyExtractor = (_: string, index: number) => `${index}`;
 
@@ -121,8 +95,30 @@ const PlacesAutocompleteScreen = withTheme(({ theme }) => {
 
   if (isFetching) {
     return (
-      <View style={styles.loading}>
+      <View style={styles.screen}>
         <ActivityIndicator />
+      </View>
+    );
+  }
+  if (error) {
+    if (error instanceof Error && error.message === ErrorMessage.network) {
+      <View style={styles.screen}>
+        <Title style={{ marginBottom: theme.spacings.large }}>
+          {t('userFeedback.screen.networkErrorTitle')}
+        </Title>
+        <Button mode="outlined" onPress={getCitiesAutocomplete}>
+          {t('common.button.tryAgain')}
+        </Button>
+      </View>;
+    }
+    return (
+      <View style={styles.screen}>
+        <Title style={{ marginBottom: theme.spacings.large }}>
+          {t('userFeedback.screen.unexpectedErrorTitle')}
+        </Title>
+        <Button mode="outlined" onPress={getCitiesAutocomplete}>
+          {t('common.button.tryAgain')}
+        </Button>
       </View>
     );
   }

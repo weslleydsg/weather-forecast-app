@@ -6,15 +6,18 @@ import {
   Theme,
 } from '@react-navigation/native';
 import React from 'react';
+import { useTranslation } from 'react-i18next';
 import { withTheme } from 'react-native-paper';
 import Icons from 'react-native-vector-icons/MaterialIcons';
 import { BottomTabStacks } from '~/types';
 import HomeStack from './home.routes';
 import MyLocationStack from './my-location.routes';
+import SettingsStack from './settings.routes';
 
 const Tab = createMaterialBottomTabNavigator<BottomTabStacks>();
 
 const BottomTabRoutes = withTheme(({ theme }) => {
+  const { t } = useTranslation();
   const navigationTheme = theme.dark ? DarkTheme : DefaultTheme;
   const combinedTheme: Theme = {
     ...navigationTheme,
@@ -31,7 +34,7 @@ const BottomTabRoutes = withTheme(({ theme }) => {
           name="HomeStack"
           component={HomeStack}
           options={{
-            tabBarLabel: 'Home',
+            tabBarLabel: t('navigate.home'),
             tabBarIcon: ({ color }) => (
               <Icons
                 name="home-filled"
@@ -45,10 +48,24 @@ const BottomTabRoutes = withTheme(({ theme }) => {
           name="MyLocationStack"
           component={MyLocationStack}
           options={{
-            tabBarLabel: 'Minha Cidade',
+            tabBarLabel: t('navigate.myCity'),
             tabBarIcon: ({ color }) => (
               <Icons
                 name="location-pin"
+                color={color}
+                size={theme.iconSizes.bottomTab}
+              />
+            ),
+          }}
+        />
+        <Tab.Screen
+          name="SettingsStack"
+          component={SettingsStack}
+          options={{
+            tabBarLabel: t('navigate.settings'),
+            tabBarIcon: ({ color }) => (
+              <Icons
+                name="settings"
                 color={color}
                 size={theme.iconSizes.bottomTab}
               />

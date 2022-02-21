@@ -1,5 +1,9 @@
 export type FavoritesCities = string[];
 
-export type DeviceStorageKeys = 'favorites';
+export type SettingsLang = string;
 
-export type DeviceStorageData = FavoritesCities;
+export type SettingsUnit = string;
+
+export type DeviceStorageKeys = 'favorites' | 'settings.lang' | 'settings.unit';
+
+export type DeviceStorageData = FavoritesCities | SettingsLang | SettingsUnit;

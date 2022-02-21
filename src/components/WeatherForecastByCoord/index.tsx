@@ -1,4 +1,5 @@
 import React, { memo, useMemo } from 'react';
+import { useTranslation } from 'react-i18next';
 import { FlatList, Image, View } from 'react-native';
 import {
   ActivityIndicator,
@@ -11,6 +12,7 @@ import {
 } from 'react-native-paper';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import environment from '~/config/environment';
+import { useSettings } from '~/contexts/useSettings';
 import { GetWeekForecast } from '~/services/api/weather';
 import { Coord, ForecastDay } from '~/types';
 import { formatWeekday } from '~/utils/FormatDate';
@@ -21,7 +23,9 @@ interface Props {
 }
 
 function WeatherForecastByCoord({ coord }: Props) {
+  const { i18n } = useTranslation();
   const theme = useTheme();
+  const { unitSuffix } = useSettings();
   const { isFetching, data } = GetWeekForecast(coord);
   const current = data?.data?.current;
   const [todayForecast, ...weekForecast] = data?.data?.daily ?? [];
@@ -41,13 +45,13 @@ function WeatherForecastByCoord({ coord }: Props) {
   const weekWeekday = useMemo(() => {
     const weekdays: string[] = [];
     const date = new Date();
-    weekdays.push(formatWeekday(date));
+    weekdays.push(formatWeekday(i18n.language, date));
     for (let index = 0; index < 7; index += 1) {
       date.setDate(date.getDate() + 1);
-      weekdays.push(formatWeekday(date));
+      weekdays.push(formatWeekday(i18n.language, date));
     }
     return weekdays;
-  }, []);
+  }, [i18n.language]);
 
   const ListHeaderComponent = current && (
     <View style={{ marginTop: theme.spacings.large }}>
@@ -55,16 +59,16 @@ function WeatherForecastByCoord({ coord }: Props) {
         <View>
           <View style={styles.row}>
             {getIconImage(current.weather[0].icon)}
-            <Headline>{`${Math.round(current.temp)} °C`}</Headline>
+            <Headline>{`${Math.round(current.temp)} ${unitSuffix}`}</Headline>
           </View>
           <View style={styles.row}>
             <Subheading>{`${Math.round(
               todayForecast.temp.max,
-            )} °C`}</Subheading>
+            )} ${unitSuffix}`}</Subheading>
             <Subheading> - </Subheading>
             <Subheading>{`${Math.round(
               todayForecast.temp.min,
-            )} °C`}</Subheading>
+            )} ${unitSuffix}`}</Subheading>
           </View>
         </View>
         <View>
@@ -95,9 +99,13 @@ function WeatherForecastByCoord({ coord }: Props) {
             </View>
           </View>
           <View style={styles.cardTempView}>
-            <Subheading>{`${Math.round(item.temp.max)} °C`}</Subheading>
+            <Subheading>{`${Math.round(
+              item.temp.max,
+            )} ${unitSuffix}`}</Subheading>
             <Subheading> - </Subheading>
-            <Subheading>{`${Math.round(item.temp.min)} °C`}</Subheading>
+            <Subheading>{`${Math.round(
+              item.temp.min,
+            )} ${unitSuffix}`}</Subheading>
           </View>
         </Card.Content>
       </Card>

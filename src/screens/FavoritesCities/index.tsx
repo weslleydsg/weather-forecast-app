@@ -1,5 +1,6 @@
 import { NavigationProp, useNavigation } from '@react-navigation/native';
 import React, { useCallback, useLayoutEffect, useRef } from 'react';
+import { useTranslation } from 'react-i18next';
 import { ActivityIndicator, FlatList, TextInput, View } from 'react-native';
 import {
   Card,
@@ -10,11 +11,12 @@ import {
   withTheme,
 } from 'react-native-paper';
 import HeaderSearchBar from '~/components/HeaderSearchBar';
-import { useFavoritesCities } from '~/hooks/useFavoritesCities';
+import { useFavoritesCities } from '~/contexts/useFavoritesCities';
 import { HomeStack } from '~/types';
 import styles from './styles';
 
 const FavoritesCitiesScreen = withTheme(({ theme }) => {
+  const { t } = useTranslation();
   const { setOptions, navigate } = useNavigation<NavigationProp<HomeStack>>();
   const { isLoading, favoritesCities, toggleFavoritesCities } =
     useFavoritesCities();
@@ -43,7 +45,7 @@ const FavoritesCitiesScreen = withTheme(({ theme }) => {
   const keyExtractor = (cityName: string) => `${cityName}`;
 
   const renderItem = ({ item }: { item: string }) => {
-    const [city, stateIgnored, country] = item.split(', ');
+    const [city, stateOrCountry, country] = item.split(', ');
     return (
       <Card
         style={{ marginTop: theme.spacings.large }}
@@ -60,7 +62,7 @@ const FavoritesCitiesScreen = withTheme(({ theme }) => {
             />
             <View>
               <Title>{city}</Title>
-              <Paragraph>{country}</Paragraph>
+              <Paragraph>{country || stateOrCountry}</Paragraph>
             </View>
           </View>
         </Card.Content>
@@ -79,10 +81,10 @@ const FavoritesCitiesScreen = withTheme(({ theme }) => {
     return (
       <View style={[styles.emptyFavorites, { padding: theme.spacings.large }]}>
         <Title style={styles.message}>
-          Parece que você ainda não adicionou uma cidade
+          {t('userFeedback.screen.noFavoritesCitiesTitle')}
         </Title>
         <Subheading style={styles.message}>
-          Tente adicionar uma cidade usando o campo de busca acima
+          {t('userFeedback.screen.noFavoritesCitiesSubtitle')}
         </Subheading>
       </View>
     );

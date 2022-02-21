@@ -65,8 +65,9 @@ function FavoritesCitiesProvider({ children }: Props): JSX.Element {
       const favoriteStoredData = await DeviceStorage.getData<FavoritesCities>(
         'favorites',
       );
-      if (!favoriteStoredData) return;
-      setFavoritesCities(favoriteStoredData);
+      if (favoriteStoredData) {
+        setFavoritesCities(favoriteStoredData);
+      }
       setIsLoading(false);
     }
 

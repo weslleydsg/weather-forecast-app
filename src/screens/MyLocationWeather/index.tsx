@@ -1,4 +1,5 @@
 import React, { useCallback, useEffect, useRef, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { Alert, AppState, Linking } from 'react-native';
 import RNLocation from 'react-native-location';
 import {
@@ -13,29 +14,33 @@ import { Coord } from '~/types';
 import styles from './styles';
 
 const MyLocationWeatherScreen = withTheme(({ theme }) => {
+  const { t } = useTranslation();
   const [coord, setCoord] = useState<Coord>();
   const [isNotGranted, setIsNotGranted] = useState(false);
   const isRequestingLocationRef = useRef(false);
 
-  const showAlertError = useCallback((retryCallback: () => unknown) => {
-    Alert.alert(
-      'Erro ao buscar sua localização',
-      'Não foi possível encontrar sua localização.',
-      [
-        {
-          text: 'Cancelar',
-          style: 'cancel',
-        },
-        {
-          text: 'Tentar novamente',
-          onPress: () => {
-            isRequestingLocationRef.current = true;
-            retryCallback();
+  const showAlertError = useCallback(
+    (retryCallback: () => unknown) => {
+      Alert.alert(
+        t('userFeedback.alert.locationErrorTitle'),
+        t('userFeedback.alert.locationErrorMessage'),
+        [
+          {
+            text: t('common.button.cancel'),
+            style: 'cancel',
           },
-        },
-      ],
-    );
-  }, []);
+          {
+            text: t('common.button.tryAgain'),
+            onPress: () => {
+              isRequestingLocationRef.current = true;
+              retryCallback();
+            },
+          },
+        ],
+      );
+    },
+    [t],
+  );
 
   const getLatestLocation = useCallback(async () => {
     try {
@@ -111,10 +116,10 @@ const MyLocationWeatherScreen = withTheme(({ theme }) => {
         <Headline
           style={[styles.errorTitle, { marginBottom: theme.spacings.large }]}
         >
-          É necessário aceitar a permissão de localização.
+          {t('userFeedback.screen.locationPermissionTitle')}
         </Headline>
         <Button mode="outlined" onPress={Linking.openSettings}>
-          Toque aqui para aceitar a permissão
+          {t('userFeedback.screen.locationPermissionButton')}
         </Button>
       </SafeAreaView>
     );
