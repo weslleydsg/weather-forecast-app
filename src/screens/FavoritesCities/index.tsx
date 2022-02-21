@@ -33,7 +33,8 @@ const FavoritesCitiesScreen = withTheme(({ theme }) => {
 
   useLayoutEffect(() => {
     setOptions({
-      headerTitle: () => (
+      headerTitle: '',
+      headerRight: () => (
         <HeaderSearchBar
           ref={searchBarRef}
           onFocus={navigateToPlacesAutoComplete}

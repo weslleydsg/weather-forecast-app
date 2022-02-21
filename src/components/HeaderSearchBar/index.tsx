@@ -1,6 +1,7 @@
 import React, { forwardRef, memo, useLayoutEffect } from 'react';
 import { TextInput, View } from 'react-native';
-import { Searchbar, useTheme } from 'react-native-paper';
+import { Searchbar } from 'react-native-paper';
+import styles from './styles';
 
 interface Props {
   value?: string;
@@ -11,8 +12,6 @@ interface Props {
 
 const HeaderSearchBar = forwardRef<TextInput, Props>(
   ({ value = '', autoFocus = false, onChangeText, onFocus }: Props, ref) => {
-    const { spacings } = useTheme();
-
     useLayoutEffect(() => {
       if (!autoFocus || !ref) return;
       const { current } = ref as React.RefObject<TextInput>;
@@ -20,10 +19,10 @@ const HeaderSearchBar = forwardRef<TextInput, Props>(
     }, [autoFocus, ref]);
 
     return (
-      <View style={{ marginLeft: spacings.large, width: '80%' }}>
+      <View style={styles.container}>
         <Searchbar
           ref={ref}
-          style={{ height: 36, elevation: 2 }}
+          style={styles.searchBar}
           value={value}
           onChangeText={onChangeText}
           onFocus={onFocus}
