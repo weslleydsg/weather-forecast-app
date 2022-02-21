@@ -1,0 +1,4 @@
+#!/bin/sh
+. "$(dirname "$0")/_/husky.sh"
+
+yarn enforce-branch-name '(feature|bugfix|hotfix|release)\/.+' --ignore '(main|develop)'
