@@ -1,3 +1,3 @@
-export function formatWeekday(date = new Date()) {
-  return date.toLocaleString('pt-br', { weekday: 'long' });
+export function formatWeekday(language: string, date = new Date()) {
+  return Intl.DateTimeFormat(language, { weekday: 'long' }).format(date);
 }

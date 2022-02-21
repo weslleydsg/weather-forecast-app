@@ -7,6 +7,6 @@ export default StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
   },
-  errorView: { flex: 1 },
+  errorView: { flex: 1, justifyContent: 'center', alignItems: 'center' },
   errorTitle: { textAlign: 'center' },
 });

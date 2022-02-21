@@ -9,7 +9,7 @@ import { ActivityIndicator, withTheme } from 'react-native-paper';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import Icons from 'react-native-vector-icons/MaterialIcons';
 import WeatherForecastByCoord from '~/components/WeatherForecastByCoord';
-import { useFavoritesCities } from '~/hooks/useFavoritesCities';
+import { useFavoritesCities } from '~/contexts/useFavoritesCities';
 import { GetCurrentWeather } from '~/services/api/weather';
 import { HomeStack } from '~/types';
 import styles from './styles';

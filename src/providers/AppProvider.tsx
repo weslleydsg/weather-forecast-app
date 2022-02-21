@@ -1,7 +1,8 @@
 import React from 'react';
 import { Provider as PaperProvider } from 'react-native-paper';
 import { QueryClientProvider } from 'react-query';
-import { FavoritesCitiesProvider } from '~/hooks/useFavoritesCities';
+import { FavoritesCitiesProvider } from '~/contexts/useFavoritesCities';
+import { SettingsProvider } from '~/contexts/useSettings';
 import useIsDarkMode from '~/hooks/useIsDarkMode';
 import { queryClient } from '~/services/queryClient';
 import { darkTheme, defaultTheme } from '~/styles';
@@ -15,7 +16,9 @@ function AppProvider({ children }: Props) {
   return (
     <QueryClientProvider client={queryClient}>
       <PaperProvider theme={isDarkMode ? darkTheme : defaultTheme}>
-        <FavoritesCitiesProvider>{children}</FavoritesCitiesProvider>
+        <SettingsProvider>
+          <FavoritesCitiesProvider>{children}</FavoritesCitiesProvider>
+        </SettingsProvider>
       </PaperProvider>
     </QueryClientProvider>
   );

@@ -9,6 +9,11 @@ export type BottomTabStacks = {
     screen: keyof MyLocationStack;
     params?: MyLocationStack[keyof MyLocationStack];
   };
+  SettingsStack?: {
+    initial: boolean;
+    screen: keyof SettingsStack;
+    params?: SettingsStack[keyof SettingsStack];
+  };
 };
 
 export type HomeStack = {
@@ -19,4 +24,8 @@ export type HomeStack = {
 
 export type MyLocationStack = {
   MyLocationWeather: undefined;
+};
+
+export type SettingsStack = {
+  Settings: undefined;
 };
